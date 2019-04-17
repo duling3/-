@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/load.css" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<meta name="viewport" content="width=375px,user-scalable=no" />
+	</head>
+
+	<body>
+		<div class="hold">
+			<div class="topContainer">
+				<div class="topLeftContainer">ToDoList</div>
+				<input type="text" class="topRightInput" placeholder="添加ToDo" name="" id="" value="" />
+			</div>
+			<div class="contentContainer">
+				<div class="firstcontentContainer">
+					<div class="prompt1">
+						<div id="title1">正在进行</div>
+						<div class="page1">0</div>
+					</div>
+					<!--正在进行的列表-->
+					<div class="doingList">
+
+					</div>
+				</div>
+				<div class="secondcontentContainer">
+					<div class="prompt2">
+						<div id="title2">已经完成</div>
+						<div class="page2">0</div>
+					</div>
+					<!--已完成列表-->
+					<div class="doneList">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			//打开页面时要加载doingArry
+			var doingArry = [];
+			var doneArry = [];
+
+			window.onload = function() {
+				//如果有数据,将数据取出转成JSON对象
+				var getdoingdata = localStorage.getItem('doingdata');
+				doingArry = JSON.parse(getdoingdata);
+
+				var getdonedata = localStorage.getItem('donedata');
+				doneArry = JSON.parse(getdonedata);
+
+				//将数据插入相应的列表
+				//将doingList中的字符串全部拿到,暂存一下,新加一条字符串tempStr
+				//然后将暂存的字符串与它拼接起来,相当于创建一大个元素
+				for(var i = 0; i < doingArry.length; i++) {
+					var doingListHTML = getListContentOp('.doingList');
+					var tempStr = createListItemStr(doingArry[i]);
+					//这个标号后面要实时更新
+					//这里相当于创建元素进列表中
+					insertStrToEle(tempStr, ".doingList");
+				}
+
+				for(var i = 0; i < doneArry.length; i++) {
+					var doneListHTML = getListContentOp('.doneList');
+					var tempStr = createListItemStr(doneArry[i]);
+					//这个标号后面要实时更新
+					//这里相当于创建元素进列表中
+					insertStrToEle(tempStr, ".doneList");
+				}
+
+				//更新page里的数据,相当于更新显示有多少个元素在列表中
+				updatePageNum();
+				//更新标号
+				refeshTheNum();
+
+			}
+
+			//从本地加载数据来初始化doing数组和done数组
+			var loadDataFromLocation = function() {
+
+			}
+
+			//添加数据进doingArry或doneArry
+			var addDataIntoArry = function() {
+
+			}
+
+			//从数组doingArry或doneArry中查找数据
+			var foundDataFromArry = function() {
+
+			}
+
+			//从doingArry或doneArry数组中删除数据 
+			var deleteDataFromArry = function() {
+
+			}
+
+			//监听鼠标弹起,即对两个列表中条目打勾勾操作进行监听
+			var ListenerMouseUpOnCheck = function(sourceList, directionList, sign /*这只是个标识json操作时能判断是哪个列表被点击了*/ ) {
+				document.querySelector(sourceList).addEventListener("mouseup", function(e) {
+					if(e.target.className === 'checkinput') {
+
+						//设置打勾状态
+						if(e.target.getAttribute('checked') === 'checked') {
+							e.target.removeAttribute('checked');
+						} else {
+							e.target.setAttribute('checked', 'checked');
+						}
+
+						//获取ingItem标号,确定现在是操作哪一个ingItem
+						var whichOne = e.target.parentElement.getAttribute('num');
+						//console.log(e.target);
+
+						//通过标号往另一个另列表中插入数据,也是字符串的相加,创建一个元素,但指定内容
+						var anotherListHTML = getListContentOp(directionList);
+
+						//这里相当于创建元素进列表中
+						//创建一个包含容器,用字符串接接的方法,将选中的数据包装在
+						//ingItem里面
+						var neStrStart = `<div class="ingItem">`;
+						var newStr = e.target.parentElement.parentElement.children[whichOne].innerHTML;
+						var newStrEnd = `</div>`;
+						var str = neStrStart + newStr + newStrEnd;
+						insertStrToEle(str, directionList);
+						
+
+						//点了doingList上的勾,数据从doingList列表传到doneList列表中
+						if(1 == sign) {
+							//找到本选择框后面输入框中的内容
+							//console.log(e.target.parentElement.children[1].value);
+							doneArry.push(e.target.parentElement.children[1].value)
+								//因为我们的条数是从最上面添加的,而又是push进去的,需要反着序号操作
+							doingArry.reverse();
+							doingArry.splice(whichOne, 1);
+							//恢复原来,不要乱序了
+							doingArry.reverse();
+							//							
+							//							console.log(whichOne);
+							//							console.log('ing2:');
+							//							console.log([doingArry]);
+							//							console.log('done2:');
+							//							console.log([doneArry]);
+
+						}
+						//点了doneList上的勾,数据从doneList列表传到doingList列表中
+						else if(2 == sign) {
+							//							doingArry.push(e.target.parentElement.children[1].value)
+							//							doneArry.splice(whichOne, 1);
+							doingArry.push(e.target.parentElement.children[1].value)
+								//因为我们的条数是从最上面添加的,而又是push进去的,需要反着序号操作
+							doneArry.reverse();
+							doneArry.splice(whichOne, 1);
+							//恢复原来,不要乱序了
+							doneArry.reverse();
+							//							console.log('ing3:');
+							//							console.log([doingArry]);
+							//							console.log('done3:');
+							//							console.log([doneArry]);
+						}
+
+						//实验发现不对啊,这里为什么不是e.target.parentElement.parentElement?
+						e.target.parentElement.remove(e.target);
+						//更新page里的数据,相当于更新显示有多少个元素在列表中
+						updatePageNum();
+						//更新标号
+						refeshTheNum();
+						
+
+						//将数据转成JSON格式
+						var doingdata = JSON.stringify(doingArry);
+						//存到doingdata中
+						localStorage.setItem('doingdata', doingdata);
+
+						//将数据转成JSON格式
+						var donedata = JSON.stringify(doneArry);
+						//存到doingdata中
+						localStorage.setItem('donedata', donedata);
+
+//						console.log([localStorage]);
+
+					}
+				}, false);
+			}
+
+			ListenerMouseUpOnCheck('.doingList', '.doneList', 1);
+			ListenerMouseUpOnCheck('.doneList', '.doingList', 2);
+
+			//两个监听列表鼠标事件可以合并
+			//监听鼠标弹起,即对两个列表中条目删除操作进行监听
+			var ListenerMouseUpOnListDel = function(whichList, sign /*这只是个标识json操作时能判断是哪个列表被点击了*/ ) {
+				//监听正在进行列表中鼠标弹起事件,弹起就是单击了嘛
+				document.querySelector(whichList).addEventListener("mouseup", function(e) {
+					//console.log(e);
+					//console.log(e.target.parentElement);
+					if(e.target.className === 'del') {
+						
+
+						//将数据从localstorage中删除
+						//获取ingItem标号,确定现在是操作哪一个ingItem
+						var whichOne = e.target.parentElement.getAttribute('num');
+						//操作的是doing列表
+						if(1 == sign) {
+							//因为我们的条数是从最上面添加的,而又是push进去的,需要反着序号操作
+							console.log(whichOne);
+							doingArry.reverse();
+							doingArry.splice(whichOne, 1);
+							//恢复原来,不要乱序了
+							doingArry.reverse();
+
+							//							console.log('ing4:');
+							//							console.log([doingArry]);
+							//							console.log('done4:');
+							//							console.log([doneArry]);
+
+						} //操作的是done列表
+						else if(2 == sign) {
+							//因为我们的条数是从最上面添加的,而又是push进去的,需要反着序号操作
+							console.log(whichOne);
+							doneArry.reverse();
+							doneArry.splice(whichOne, 1);
+							//恢复原来,不要乱序了
+							doneArry.reverse();
+
+							//							console.log('ing5:');
+							//							console.log([doingArry]);
+							//							console.log('done5:');
+							//							console.log([doneArry]);
+						}
+
+						//实验发现不对啊,这里为什么不是e.target.parentElement.parentElement?
+						e.target.parentElement.remove(e.target);
+						//更新page里的数据,相当于更新显示有多少个元素在列表中
+						updatePageNum();
+						//更新标号
+						refeshTheNum();
+
+						//将数据转成JSON格式
+						var doingdata = JSON.stringify(doingArry);
+						//存到doingdata中
+						localStorage.setItem('doingdata', doingdata);
+
+						//将数据转成JSON格式
+						var donedata = JSON.stringify(doneArry);
+						//存到doingdata中
+						localStorage.setItem('donedata', donedata);
+
+//						console.log([localStorage]);
+
+					}
+				}, false);
+			}
+
+			ListenerMouseUpOnListDel('.doingList', 1);
+			ListenerMouseUpOnListDel('.doneList', 2);
+
+			//重新刷新每一个标号,即把正在进行列表和
+			//已经完成列表的ingItem标签上的num按照列表长度重新设置,保证正确
+			var refeshTheNum = function() {
+				//得到dling列表中ingItem元素的个数
+				var getdoingList = document.querySelector('.doingList');
+				var getdoingItemCount = getdoingList.childElementCount;
+				//得到done列表中ingItem元素的个数
+				var getdoneList = document.querySelector('.doneList');
+				var getdoneItemCount = getdoneList.childElementCount;
+				for(var i = getdoingItemCount - 1; i >= 0; i--) {
+					getdoingList.children[i].setAttribute('num', i);
+				}
+				for(var i = getdoneItemCount - 1; i >= 0; i--) {
+					getdoneList.children[i].setAttribute('num', i);
+				}
+
+			}
+
+			//监听键盘按下确定按钮,从而将输入的数据从最上面的输入框中
+			//放到正在进行中的列表中的第一行,更新右边的计数器,将进行时列表数据
+			//存储起来
+
+			document.querySelector('.topRightInput').addEventListener("keydown", function(e) {
+				if(e.code === "Enter") {
+					//对正在进行列表的操作
+					//获取输入
+					var getTopInputValue = getTopInputValueOp();
+					//输入不为空
+					if(getTopInputValue === "")
+						return;
+					//将doingList中的字符串全部拿到,暂存一下,新加一条字符串tempStr
+					//然后将暂存的字符串与它拼接起来,相当于创建一大个元素
+					var doingListHTML = getListContentOp('.doingList');
+					var tempStr = createListItemStr(getTopInputValue);
+					//这个标号后面要实时更新
+					//这里相当于创建元素进列表中
+					insertStrToEle(tempStr, ".doingList");
+					//更新page1里的数据,相当于更新显示有多少个元素在列表中
+					updatePageNum();
+					//更新标号
+					refeshTheNum();
+
+					//更新本地数据
+					doingArry.push(getTopInputValue);
+					//					console.log('ing1:');
+					//					console.log([doingArry]);
+					//					console.log('done1:');
+					//					console.log([doneArry]);
+					//console.log(doingArry);
+
+					//将数据转成JSON格式
+					var data = JSON.stringify(doingArry);
+					//存到doingdata中
+					localStorage.setItem('doingdata', data);
+//					console.log([localStorage]);
+
+				}
+			}, false);
+
+			//更新page里的数据,相当于更新计算有多少个元素在列表中
+			var updatePageNum = function() {
+				//得到dling列表中ingItem元素的个数
+				var getdoingList = document.querySelector('.doingList');
+				//	console.log(getdoingList.childElementCount);
+				//更新Page元素显示的值
+				var getpage1 = document.querySelector('.prompt1 .page1');
+				getpage1.innerHTML = getdoingList.childElementCount;
+				//	console.log(getpage1);
+
+				//得到doneList列表中ingItem元素的个数
+				var getdoneList = document.querySelector('.doneList');
+				//	console.log(getdoingList.childElementCount);
+				//更新Page元素显示的值
+				var getpage2 = document.querySelector('.prompt2 .page2');
+				getpage2.innerHTML = getdoneList.childElementCount;
+				//	console.log(getpage1);
+			}
+
+			//向元素中插入字符串,相当于创建一个元素,因为不同的字符串被客户端解释显示
+			var insertStrToEle = function(insertWhat, whereInsert) {
+				var insertEle = document.querySelector(whereInsert);
+				insertEle.innerHTML = insertWhat + insertEle.innerHTML;
+			}
+
+			//获取正在进行列表的全部内容
+			var getListContentOp = function(WhichList) {
+				var getdoingList = document.querySelector(WhichList);
+				var str = getdoingList.innerHTML;
+				return str;
+			}
+
+			//获取最右上边的输入框的值
+			var getTopInputValueOp = function() {
+				//获取最右上边输入框的数据,将它保存到一个变量中,为后面新加字符串tempStr
+				//中的数据部分做准备
+				var getTopInput = document.querySelector('.topRightInput');
+				return getTopInput.value;
+			}
+
+			//创建每一个通用列表元素的函数
+			var createListItemStr = function(setValue) {
+				//找到doingList,往里面插入字符串,相当于创建元素
+				//这里是公共属性,不用设置,可以封装给别人用,只要有人肯用
+				var classname1 = "ingItem";
+				var classname2 = "del";
+				var type1 = "checkbox";
+				var type2 = "text";
+				var checkclass = "checkinput";
+				var textclass = "displaytext";
+				var textSize = "0.01rem";
+
+				var str = `
+				<div class=${classname1}  >
+				<input type=${type1} class=${checkclass} />
+				<input type=${type2} class=${textclass} value=${setValue} />
+				<div class=${classname2} ></div>
+				</div>
+				`;
+				return str;
+			}
+		</script>
+	</body>
+
+</html>

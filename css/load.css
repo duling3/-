@@ -1,0 +1,159 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body{
+	/*background-color: #CDCDCD;*/
+	background-image: url(../img/1.jpeg);
+	background-repeat: no-repeat;
+	background-position: 0 0.5rem;
+}
+
+.hold {
+	width: 3.75rem;
+	/*后面这里需要设置成100%*/
+	/*height: 2rem;*/
+	display: flex;
+	flex-direction: column;
+	/*background-color: red;*/
+}
+
+.topContainer {
+	width: 3.75rem;
+	height: 0.5rem;
+	font-size: 0.16rem;
+	background: rgba(47, 47, 47, 0.98);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.topLeftContainer {
+	width:1rem;
+	font-size: 0.24rem;
+	line-height: 0.5rem;
+	color: #DDD;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding-left: 0.1rem;
+}
+
+.topRightInput {
+	width: 60%;
+	height: 0.24rem;
+	text-indent: 0.10rem;
+	border-radius: 0.05rem;
+	box-shadow: 0 0.01rem 0 rgba(255, 255, 255, 0.24), 0 0.01rem 0.06rem rgba(0, 0, 0, 0.45) inset;
+	border: none;
+	margin-right: 0.1rem;
+}
+
+.contentContainer {
+	width: 3.75rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.firstcontentContainer{
+	display: flex;
+	flex-direction: column;
+}
+
+.secondcontentContainer{
+	display: flex;
+	flex-direction: column;
+}
+
+/*包含正在进行与已经完成的标签和其任务列表条数的标签*/
+.prompt1,.prompt2{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/*显示正在进行与已经完成的标签*/
+#title1,#title2{
+    font-size: 0.3rem;
+    flex:1;
+   	font-weight: bold;
+   	margin-left:0.1rem;
+   	margin-top: 0.2rem;
+}
+
+/*标识显示正在进行的任务条数的标签  就是最右边的数学*/
+/*标识显示已经完成的任务条数标签    就是最右边的数学*/
+.page1,.page2{
+	font-size: 0.3rem;
+	width:0.3rem;
+	height: 0.3rem;
+    border-radius: 0.15rem;
+    background: #E6E6FA;
+    line-height: 0.32rem;
+    text-align: center;
+    color: #666;
+    font-weight: bold;
+    margin-right: 0.2rem;
+    margin-top: 0.2rem;
+}
+
+/*正在进行任务列表的容器*/
+.doingList,.doneList{
+	display: flex;
+	flex-direction: column;
+	margin-top: 0.25rem;
+}
+
+/*正在进行任务容器中的某一条任务的容器*/
+.ingItem{
+	opacity: 0.6;
+	width:96%;
+	height: 0.32rem;
+    line-height: 0.32rem;
+    background: #fff;
+    border-radius: 0.03rem;
+    border-left: 0.05rem solid #629A9C;
+    box-shadow: 0 0.01rem 0.02rem rgba(0,0,0,0.07);
+    display: flex;
+	align-items: center;
+	justify-content:flex-start;
+	margin-top: 0.05rem;
+}
+
+/*任务列表中的选择框*/
+.checkinput{
+    width: 0.22rem;
+    height: 0.22rem;
+    margin-left: 0.1rem;
+}
+
+/*任务列表中的显示文本,可修改*/
+.displaytext{
+	width:100%;
+	height: 0.22rem;
+	border: 0;
+	margin-left: 0.05rem;
+	list-style: none;
+	font-weight: 700;
+	/*font-size: 0.18rem;*/
+}
+
+.del{
+    width: 0.3rem;
+    height: 0.25rem;
+    border-radius: 0.15rem;
+    border: 0.06rem double #FFF;
+    background: #CCC;
+    line-height: 0.14rem;
+    text-align: center;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 0.14rem;
+    margin-left: 0.05rem;
+}
+
+
+
+
+
